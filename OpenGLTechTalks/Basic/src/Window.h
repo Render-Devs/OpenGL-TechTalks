@@ -27,6 +27,7 @@ public:
 	virtual bool IsVSync() const = 0;
 
 	virtual void* GetNativeWindow() const = 0;
+	virtual void Shutdown() = 0;
 
 	static IWindow* Create(const WindowData& data = WindowData());
 

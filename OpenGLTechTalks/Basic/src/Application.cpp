@@ -47,4 +47,7 @@ void Application::Run()
 
 		m_Window->OnUpdate();
 	}
+
+	m_Renderer->Dispose();
+	m_Window->Shutdown();
 }

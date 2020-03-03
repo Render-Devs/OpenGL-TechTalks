@@ -134,6 +134,7 @@ void OpenGLWindow::Init(const WindowData& data)
 void OpenGLWindow::Shutdown()
 {
 	glfwDestroyWindow(m_Window);
+	glfwTerminate();
 }
 
 void OpenGLWindow::OnUpdate()
