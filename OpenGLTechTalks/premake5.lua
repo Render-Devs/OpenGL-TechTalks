@@ -65,6 +65,52 @@ project "Basic"
   		runtime "Release"
   		optimize "On"
 
+project "Subroutines"
+  location "Subroutines"
+  kind "ConsoleApp"
+  language "C++"
+  cppdialect "C++17"
+  staticruntime "on"
+
+  targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+  files
+  {
+    "%{prj.name}/src/**.h",
+    "%{prj.name}/src/**.cpp",
+  }
+
+  defines
+  {
+    "GLFW_INCLUDE_NONE"
+  }
+
+  includedirs
+  {
+     "Subroutines/src",
+     "Basic/src",
+     "%{IncludeDir.Glad}",
+     "%{IncludeDir.GLFW}"
+  }
+
+  links
+  {
+      "Basic"
+  }
+
+  filter "system:windows"
+		systemversion "latest"
+
+	filter "configurations:Debug"
+		runtime "Debug"
+		symbols "On"
+
+	filter "configurations:Release"
+		runtime "Release"
+		optimize "On"
+
+--Template for project creation
 project "Test"
   location "Test"
   kind "ConsoleApp"
@@ -81,11 +127,17 @@ project "Test"
     "%{prj.name}/src/**.cpp",
   }
 
+  defines
+  {
+    "GLFW_INCLUDE_NONE"
+  }
+
   includedirs
   {
      "Test/src",
      "Basic/src",
-     "%{IncludeDir.GLFW}"
+     "%{IncludeDir.GLFW}",
+     "%{IncludeDir.Glad}"
   }
 
   links

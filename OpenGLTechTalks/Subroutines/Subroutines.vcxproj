@@ -11,10 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{45DC8C7C-3113-8E0D-DAFF-7310C6150A0F}</ProjectGuid>
+    <ProjectGuid>{88671B48-F41C-943D-7D11-8E14E9C58A41}</ProjectGuid>
     <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>Test</RootNamespace>
+    <RootNamespace>Subroutines</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -42,16 +42,16 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dubug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\bin\Dubug-windows-x86_64\Test\</OutDir>
-    <IntDir>..\bin-int\Dubug-windows-x86_64\Test\</IntDir>
-    <TargetName>Test</TargetName>
+    <OutDir>..\bin\Dubug-windows-x86_64\Subroutines\</OutDir>
+    <IntDir>..\bin-int\Dubug-windows-x86_64\Subroutines\</IntDir>
+    <TargetName>Subroutines</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\bin\Release-windows-x86_64\Test\</OutDir>
-    <IntDir>..\bin-int\Release-windows-x86_64\Test\</IntDir>
-    <TargetName>Test</TargetName>
+    <OutDir>..\bin\Release-windows-x86_64\Subroutines\</OutDir>
+    <IntDir>..\bin-int\Release-windows-x86_64\Subroutines\</IntDir>
+    <TargetName>Subroutines</TargetName>
     <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dubug|x64'">
@@ -59,7 +59,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;..\Basic\src;..\ThirdParty\GLFW\include;..\ThirdParty\Glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;..\Basic\src;..\ThirdParty\Glad\include;..\ThirdParty\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -73,7 +73,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>GLFW_INCLUDE_NONE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;..\Basic\src;..\ThirdParty\GLFW\include;..\ThirdParty\Glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;..\Basic\src;..\ThirdParty\Glad\include;..\ThirdParty\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>

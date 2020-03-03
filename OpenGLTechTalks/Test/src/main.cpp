@@ -15,6 +15,10 @@ class Renderer : public IRenderer
 	virtual void SetViewport(uint32_t width, uint32_t height) override
 	{
 	}
+	virtual void Dispose() override
+	{
+
+	}
 };
 
 class App : public Application
