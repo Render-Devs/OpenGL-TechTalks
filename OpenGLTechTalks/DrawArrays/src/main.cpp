@@ -83,6 +83,13 @@ protected:
     {
     }
 
+    void Dispose() override
+    {
+        glDeleteVertexArrays(4, vao);
+        glDeleteBuffers(4, vbo);
+        glDeleteProgram(shaderProgram);
+    }
+
     void SetViewport(uint32_t width, uint32_t height) override
     {
     }
