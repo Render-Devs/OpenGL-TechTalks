@@ -3,7 +3,7 @@ workspace "OpenGLTechTalks"
 
   configurations
   {
-    "Dubug",
+    "Debug",
     "Release"
   }
 
