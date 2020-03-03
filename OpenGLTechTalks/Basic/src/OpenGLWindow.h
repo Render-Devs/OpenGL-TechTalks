@@ -16,11 +16,10 @@ public:
 	void SetVSync(bool enabled) override;
 	bool IsVSync() const override;
 	virtual void* GetNativeWindow() const override { return m_Window; };
+	virtual void Shutdown() override;
 
 private:
-
 	virtual void Init(const WindowData& props);
-	virtual void Shutdown();
 
 	GLFWwindow* m_Window;
 	Scope<GraphicsContext> m_Context;
