@@ -46,7 +46,7 @@ project "Basic"
   links
   {
     "GLFW",
-		"Glad",
+	"Glad",
     "opengl32.lib"
   }
 
@@ -86,6 +86,46 @@ project "Test"
      "Test/src",
      "Basic/src",
      "%{IncludeDir.GLFW}"
+  }
+
+  links
+  {
+      "Basic"
+  }
+
+  filter "system:windows"
+		systemversion "latest"
+
+	filter "configurations:Debug"
+		runtime "Debug"
+		symbols "On"
+
+	filter "configurations:Release"
+		runtime "Release"
+		optimize "On"
+
+project "DrawArrays"
+  location "DrawArrays"
+  kind "ConsoleApp"
+  language "C++"
+  cppdialect "C++17"
+  staticruntime "on"
+
+  targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+  files
+  {
+    "%{prj.name}/src/**.h",
+    "%{prj.name}/src/**.cpp",
+  }
+
+  includedirs
+  {
+     "DrawArrays/src",
+     "Basic/src",
+     "%{IncludeDir.GLFW}",	 
+	 "%{IncludeDir.Glad}"
   }
 
   links
