@@ -122,10 +122,10 @@ project "DrawArrays"
 
   includedirs
   {
-     "DrawArrays/src",
-     "Basic/src",
-     "%{IncludeDir.GLFW}",	 
-	 "%{IncludeDir.Glad}"
+	"DrawArrays/src",
+	"Basic/src",
+	"%{IncludeDir.GLFW}",	 
+	"%{IncludeDir.Glad}"
   }
 
   links
