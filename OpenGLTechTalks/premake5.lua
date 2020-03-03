@@ -24,29 +24,29 @@ project "Basic"
   staticruntime "on"
 
   targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
   files
   {
     "%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
+        "%{prj.name}/src/**.cpp"
   }
 
   defines
-	{
-		"_CRT_SECURE_NO_WARNINGS"
-	}
+    {
+        "_CRT_SECURE_NO_WARNINGS"
+    }
 
   includedirs
   {
     "%{IncludeDir.GLFW}",
-		"%{IncludeDir.Glad}"
+        "%{IncludeDir.Glad}"
   }
 
   links
   {
     "GLFW",
-	"Glad",
+    "Glad",
     "opengl32.lib"
   }
 
@@ -58,12 +58,12 @@ project "Basic"
     }
 
     filter "configurations:Debug"
-  		runtime "Debug"
-  		symbols "On"
+        runtime "Debug"
+        symbols "On"
 
-  	filter "configurations:Release"
-  		runtime "Release"
-  		optimize "On"
+    filter "configurations:Release"
+        runtime "Release"
+        optimize "On"
 
 project "Test"
   location "Test"
@@ -73,7 +73,7 @@ project "Test"
   staticruntime "on"
 
   targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
   files
   {
@@ -83,9 +83,9 @@ project "Test"
 
   includedirs
   {
-     "Test/src",
-     "Basic/src",
-     "%{IncludeDir.GLFW}"
+    "Test/src",
+    "Basic/src",
+    "%{IncludeDir.GLFW}"
   }
 
   links
@@ -94,15 +94,15 @@ project "Test"
   }
 
   filter "system:windows"
-		systemversion "latest"
+        systemversion "latest"
 
-	filter "configurations:Debug"
-		runtime "Debug"
-		symbols "On"
+    filter "configurations:Debug"
+        runtime "Debug"
+        symbols "On"
 
-	filter "configurations:Release"
-		runtime "Release"
-		optimize "On"
+    filter "configurations:Release"
+        runtime "Release"
+        optimize "On"
 
 project "DrawArrays"
   location "DrawArrays"
@@ -112,7 +112,7 @@ project "DrawArrays"
   staticruntime "on"
 
   targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
   files
   {
@@ -122,24 +122,24 @@ project "DrawArrays"
 
   includedirs
   {
-	"DrawArrays/src",
-	"Basic/src",
-	"%{IncludeDir.GLFW}",	 
-	"%{IncludeDir.Glad}"
+    "DrawArrays/src",
+    "Basic/src",
+    "%{IncludeDir.GLFW}",    
+    "%{IncludeDir.Glad}"
   }
 
   links
   {
-      "Basic"
+    "Basic"
   }
 
   filter "system:windows"
-		systemversion "latest"
+        systemversion "latest"
 
-	filter "configurations:Debug"
-		runtime "Debug"
-		symbols "On"
+    filter "configurations:Debug"
+        runtime "Debug"
+        symbols "On"
 
-	filter "configurations:Release"
-		runtime "Release"
-		optimize "On"
+    filter "configurations:Release"
+        runtime "Release"
+        optimize "On"
