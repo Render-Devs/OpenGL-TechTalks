@@ -223,3 +223,43 @@ project "DrawElements"
     filter "configurations:Release"
         runtime "Release"
         optimize "On"
+
+project "MultiDrawElements"
+  location "MultiDrawElements"
+  kind "ConsoleApp"
+  language "C++"
+  cppdialect "C++17"
+  staticruntime "on"
+
+  targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+  files
+  {
+    "%{prj.name}/src/**.h",
+    "%{prj.name}/src/**.cpp",
+  }
+
+  includedirs
+  {
+    "MultiDrawElements/src",
+    "Basic/src",
+    "%{IncludeDir.GLFW}",    
+    "%{IncludeDir.Glad}"
+  }
+
+  links
+  {
+    "Basic"
+  }
+
+  filter "system:windows"
+        systemversion "latest"
+
+    filter "configurations:Debug"
+        runtime "Debug"
+        symbols "On"
+
+    filter "configurations:Release"
+        runtime "Release"
+        optimize "On"
