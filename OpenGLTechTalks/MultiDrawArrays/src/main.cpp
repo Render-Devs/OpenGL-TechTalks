@@ -5,56 +5,47 @@
 #include <iostream>
 #include <vector>
 
-class DrawArraysRenderer final : public IRenderer
+class MultiDrawArraysRenderer final : public IRenderer
 {
 private:
-    const std::vector<GLfloat> vertices0
+    const std::vector<GLfloat> vertices
     {
         -1.00f, 1.00f, 0.00f,
-        0.00f, 1.00f, 0.00f,
-        -1.00f, 0.00f, 0.00f
-    };
+         0.00f, 1.00f, 0.00f,
+        -1.00f, 0.00f, 0.00f,
 
-    const std::vector<GLfloat> vertices1
-    {
-        1.00f, -1.00f, 0.00f,
-        0.00f, -1.00f, 0.00f,
-        1.00f,  0.00f, 0.00f
-    };
+         1.00f, -1.00f, 0.00f,
+         0.00f, -1.00f, 0.00f,
+         1.00f,  0.00f, 0.00f,
 
-    const std::vector<GLfloat> vertices2
-    {
         -1.00f, -1.00f, 0.00f,
         -1.00f, -0.50f, 0.00f,
-        -0.50f, -1.00f, 0.00f
+        -0.50f, -1.00f, 0.00f,
+
+         1.00f,  1.00f, 0.00f,
+         1.00f,  0.50f, 0.00f,
+         0.50f,  1.00f, 0.00f
     };
 
-    const std::vector<GLfloat> vertices3
-    {
-        1.00f, 1.00f, 0.00f,
-        1.00f, 0.50f, 0.00f,
-        0.50f, 1.00f, 0.00f
-    };
-
-    const std::vector<std::vector<GLfloat>> vertices
-    {
-        vertices0, vertices1, vertices2, vertices3
-    };
-
-    GLuint vao[4]{};
-    GLuint vbo[4]{};
-    GLuint shaderProgram{};
+    GLint     first[4]{ 0, 3, 6, 9 };
+    GLint     count[4]{ 3, 3, 3, 3 };
+    GLuint    numObjects{ 4 };
+    GLuint    vao{};
+    GLuint    vbo{};
+    GLuint    shaderProgram{};
 
 protected:
     void Init() override
     {
-        glGenVertexArrays(4, vao);
-        glGenBuffers(4, vbo);
+        glGenVertexArrays(1, &vao);
+        glGenBuffers(1, &vbo);
 
-        GenerateData(0);
-        GenerateData(1);
-        GenerateData(2);
-        GenerateData(3);
+        glBindVertexArray(vao);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
+        glEnableVertexAttribArray(0);
 
         shaderProgram = CreateShaderProgram();
     }
@@ -66,17 +57,8 @@ protected:
 
         glUseProgram(shaderProgram);
 
-        glBindVertexArray(vao[0]);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-
-        glBindVertexArray(vao[1]);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-
-        glBindVertexArray(vao[2]);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-
-        glBindVertexArray(vao[3]);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glBindVertexArray(vao);
+        glMultiDrawArrays(GL_TRIANGLES, first, count, numObjects);
     }
 
     void PostUpdate(float) override
@@ -85,8 +67,8 @@ protected:
 
     void Dispose() override
     {
-        glDeleteVertexArrays(4, vao);
-        glDeleteBuffers(4, vbo);
+        glDeleteVertexArrays(1, &vao);
+        glDeleteBuffers(1, &vbo);
         glDeleteProgram(shaderProgram);
     }
 
@@ -95,19 +77,6 @@ protected:
     }
 
 private:
-    void GenerateData(const unsigned int idx)
-    {
-        glBindVertexArray(vao[idx]);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo[idx]);
-
-        glBufferData(GL_ARRAY_BUFFER, vertices[idx].size() * sizeof(GLfloat), vertices[idx].data(), GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
-        glEnableVertexAttribArray(0);
-
-        glBindVertexArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-    }
-
     static GLuint CreateShaderProgram()
     {
         static const char* vs_source[] =
@@ -165,5 +134,5 @@ public:
 
 Application* CreateApplication()
 {
-    return new App(new DrawArraysRenderer());
+    return new App(new MultiDrawArraysRenderer());
 }
