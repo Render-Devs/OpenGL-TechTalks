@@ -11,7 +11,8 @@
 class Application
 {
 public:
-	Application(IRenderer* renderer);
+	Application(IRenderer* renderer, const WindowData& windowData);
+	Application(IRenderer* renderer) : Application(renderer, WindowData()){}
 	virtual ~Application() = default;
 	void Run();
 	void OnEvent(Event & e);
