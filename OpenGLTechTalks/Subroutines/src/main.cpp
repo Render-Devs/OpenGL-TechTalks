@@ -153,8 +153,6 @@ class Renderer : public IRenderer
 		glEnableVertexAttribArray(1);
 
 		glBindVertexArray(0);
-
-		
 	}
 
 	virtual void Update(float deltaTime) override
@@ -163,35 +161,20 @@ class Renderer : public IRenderer
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(0);
-
-		float res[] = { 1920, 1080 };
-		GLuint location = glGetUniformLocation(subroutinedShader->GetId(), "u_resolution");
-		glUniform2fv(location, 1, res);
 		
+
+		GLuint colorSelector = glGetSubroutineUniformLocation(subroutinedShader->GetId(), GL_FRAGMENT_SHADER, "newGradientColor");
+		GLuint redIndex = glGetSubroutineIndex(subroutinedShader->GetId(), GL_FRAGMENT_SHADER, "redColor");
+		GLuint blueIndex = glGetSubroutineIndex(subroutinedShader->GetId(), GL_FRAGMENT_SHADER, "blueColor");
+
+		GLsizei size;
+		glGetProgramStageiv(subroutinedShader->GetId(), GL_FRAGMENT_SHADER, GL_ACTIVE_SUBROUTINE_UNIFORM_LOCATIONS, &size);
+		GLuint* indicies = new GLuint[size];
+		indicies[colorSelector] = counter ? redIndex : blueIndex;
+
 		subroutinedShader->Use();
+		glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, size, indicies);
 
-		GLuint colorSelector;
-		GLuint redIndex;
-		GLuint blueIndex;
-
-		colorSelector = glGetSubroutineUniformLocation(subroutinedShader->GetId(), GL_FRAGMENT_SHADER, "newGradientColor");
-
-		redIndex = glGetSubroutineIndex(subroutinedShader->GetId(), GL_FRAGMENT_SHADER, "redColor");
-		blueIndex = glGetSubroutineIndex(subroutinedShader->GetId(), GL_FRAGMENT_SHADER, "blueColor");
-
-		GLsizei n;
-		glGetProgramStageiv(subroutinedShader->GetId(), GL_FRAGMENT_SHADER, GL_ACTIVE_SUBROUTINE_UNIFORM_LOCATIONS, &n);
-		GLuint* indicies = new GLuint[n];
-		if (counter)
-		{
-			indicies[colorSelector] = redIndex;
-		}
-		else
-		{
-			indicies[colorSelector] = blueIndex;
-		}
-
-		glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, n, indicies);
 		delete[] indicies;
 
 		glBindVertexArray(vertexArray);
