@@ -3,7 +3,7 @@ workspace "OpenGLTechTalks"
 
   configurations
   {
-    "Dubug",
+    "Debug",
     "Release"
   }
 
@@ -24,29 +24,29 @@ project "Basic"
   staticruntime "on"
 
   targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
   files
   {
     "%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
+        "%{prj.name}/src/**.cpp"
   }
 
   defines
-	{
-		"_CRT_SECURE_NO_WARNINGS"
-	}
+    {
+        "_CRT_SECURE_NO_WARNINGS"
+    }
 
   includedirs
   {
     "%{IncludeDir.GLFW}",
-		"%{IncludeDir.Glad}"
+        "%{IncludeDir.Glad}"
   }
 
   links
   {
     "GLFW",
-		"Glad",
+    "Glad",
     "opengl32.lib"
   }
 
@@ -58,12 +58,12 @@ project "Basic"
     }
 
     filter "configurations:Debug"
-  		runtime "Debug"
-  		symbols "On"
+        runtime "Debug"
+        symbols "On"
 
-  	filter "configurations:Release"
-  		runtime "Release"
-  		optimize "On"
+    filter "configurations:Release"
+        runtime "Release"
+        optimize "On"
 
 project "Subroutines"
   location "Subroutines"
@@ -119,7 +119,7 @@ project "Test"
   staticruntime "on"
 
   targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
   files
   {
@@ -146,12 +146,172 @@ project "Test"
   }
 
   filter "system:windows"
-		systemversion "latest"
+        systemversion "latest"
 
-	filter "configurations:Debug"
-		runtime "Debug"
-		symbols "On"
+    filter "configurations:Debug"
+        runtime "Debug"
+        symbols "On"
 
-	filter "configurations:Release"
-		runtime "Release"
-		optimize "On"
+    filter "configurations:Release"
+        runtime "Release"
+        optimize "On"
+
+project "DrawArrays"
+  location "DrawArrays"
+  kind "ConsoleApp"
+  language "C++"
+  cppdialect "C++17"
+  staticruntime "on"
+
+  targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+  files
+  {
+    "%{prj.name}/src/**.h",
+    "%{prj.name}/src/**.cpp",
+  }
+
+  includedirs
+  {
+    "DrawArrays/src",
+    "Basic/src",
+    "%{IncludeDir.GLFW}",
+    "%{IncludeDir.Glad}"
+  }
+
+  links
+  {
+    "Basic"
+  }
+
+  filter "system:windows"
+        systemversion "latest"
+
+    filter "configurations:Debug"
+        runtime "Debug"
+        symbols "On"
+
+    filter "configurations:Release"
+        runtime "Release"
+        optimize "On"
+
+project "MultiDrawArrays"
+  location "MultiDrawArrays"
+  kind "ConsoleApp"
+  language "C++"
+  cppdialect "C++17"
+  staticruntime "on"
+
+  targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+  files
+  {
+    "%{prj.name}/src/**.h",
+    "%{prj.name}/src/**.cpp",
+  }
+
+  includedirs
+  {
+    "MultiDrawArrays/src",
+    "Basic/src",
+    "%{IncludeDir.GLFW}",
+    "%{IncludeDir.Glad}"
+  }
+
+  links
+  {
+    "Basic"
+  }
+
+  filter "system:windows"
+        systemversion "latest"
+
+    filter "configurations:Debug"
+        runtime "Debug"
+        symbols "On"
+
+    filter "configurations:Release"
+        runtime "Release"
+        optimize "On"
+
+project "DrawElements"
+  location "DrawElements"
+  kind "ConsoleApp"
+  language "C++"
+  cppdialect "C++17"
+  staticruntime "on"
+
+  targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+  files
+  {
+    "%{prj.name}/src/**.h",
+    "%{prj.name}/src/**.cpp",
+  }
+
+  includedirs
+  {
+    "DrawElements/src",
+    "Basic/src",
+    "%{IncludeDir.GLFW}",
+    "%{IncludeDir.Glad}"
+  }
+
+  links
+  {
+    "Basic"
+  }
+
+  filter "system:windows"
+        systemversion "latest"
+
+    filter "configurations:Debug"
+        runtime "Debug"
+        symbols "On"
+
+    filter "configurations:Release"
+        runtime "Release"
+        optimize "On"
+
+project "MultiDrawElements"
+  location "MultiDrawElements"
+  kind "ConsoleApp"
+  language "C++"
+  cppdialect "C++17"
+  staticruntime "on"
+
+  targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+  files
+  {
+    "%{prj.name}/src/**.h",
+    "%{prj.name}/src/**.cpp",
+  }
+
+  includedirs
+  {
+    "MultiDrawElements/src",
+    "Basic/src",
+    "%{IncludeDir.GLFW}",
+    "%{IncludeDir.Glad}"
+  }
+
+  links
+  {
+    "Basic"
+  }
+
+  filter "system:windows"
+        systemversion "latest"
+
+    filter "configurations:Debug"
+        runtime "Debug"
+        symbols "On"
+
+    filter "configurations:Release"
+        runtime "Release"
+        optimize "On"

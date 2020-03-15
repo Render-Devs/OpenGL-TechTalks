@@ -2,10 +2,10 @@
 
 Application* Application::s_Instance = nullptr;
 
-Application::Application(IRenderer* renderer)
+Application::Application(IRenderer* renderer, const WindowData& windowData)
 {
 	s_Instance = this;
-	m_Window = Scope<IWindow>(IWindow::Create());
+	m_Window = Scope<IWindow>(IWindow::Create(windowData));
 	m_Window->SetEventCallback(BIND_EVENT(Application::OnEvent));
 	m_Renderer = Scope<IRenderer>(renderer);
 	m_Renderer->Init();
