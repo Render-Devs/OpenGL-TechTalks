@@ -126,7 +126,7 @@ private:
 class App : public Application
 {
 public:
-    App(IRenderer* render) : Application(render)
+    App(IRenderer* render, const WindowData& windowData) : Application(render, windowData)
     {
 
     }
@@ -134,5 +134,5 @@ public:
 
 Application* CreateApplication()
 {
-    return new App(new MultiDrawArraysRenderer());
+    return new App(new MultiDrawArraysRenderer(), WindowData("glMultiDrawArrays", 800, 600));
 }

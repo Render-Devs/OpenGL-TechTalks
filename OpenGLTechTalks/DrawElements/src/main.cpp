@@ -179,7 +179,7 @@ private:
 class App : public Application
 {
 public:
-    App(IRenderer* render) : Application(render)
+    App(IRenderer* render, const WindowData& windowData) : Application(render, windowData)
     {
 
     }
@@ -187,5 +187,5 @@ public:
 
 Application* CreateApplication()
 {
-    return new App(new DrawElementsRenderer());
+    return new App(new DrawElementsRenderer(), WindowData("glDrawElements", 800, 600));
 }
