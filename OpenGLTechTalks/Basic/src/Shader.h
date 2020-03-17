@@ -10,7 +10,7 @@ namespace core
     class Shader
     {
     private:
-        unsigned int m_ID;
+        GLuint m_ID;
     public:
         Shader();
 
@@ -18,11 +18,9 @@ namespace core
 
         ~Shader();
 
-        void activate();
+        void SetActive(bool value) const;
 
-        void deActivate();
-
-        unsigned int getID();
+        GLuint getID() const;
 
         void setBool(const std::string& name, bool value) const;
 
@@ -31,7 +29,7 @@ namespace core
         void setFloat(const std::string& name, float value) const;
 
     private:
-        void checkCompileErrors(GLuint shader, std::string type);
+        static bool checkCompileErrors(GLuint shader, std::string type);
     };    
 }
 
