@@ -65,7 +65,7 @@ protected:
 
         glBindVertexArray(vao);
 
-        program->activate();
+        program->SetActive(true);
 
         program->setFloat4("color", 0.0f, 0.51f, 0.82f, 1.0f);
         glDrawElementsBaseVertex(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, 0);

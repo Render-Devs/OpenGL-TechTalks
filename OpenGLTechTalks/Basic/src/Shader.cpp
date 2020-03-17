@@ -43,23 +43,38 @@ namespace core
         const char* vShaderCode = vertexCode.c_str();
         const char* fShaderCode = fragmentCode.c_str();
 
-        unsigned int vertex, fragment;
+        GLuint vertex, fragment;
 
         vertex = glCreateShader(GL_VERTEX_SHADER);
         glShaderSource(vertex, 1, &vShaderCode, nullptr);
         glCompileShader(vertex);
-        checkCompileErrors(vertex, "VERTEX");
+
+        if(!checkCompileErrors(vertex, "VERTEX"))
+        {
+            glDeleteShader(vertex);
+            return;
+        };
 
         fragment = glCreateShader(GL_FRAGMENT_SHADER);
         glShaderSource(fragment, 1, &fShaderCode, nullptr);
         glCompileShader(fragment);
-        checkCompileErrors(fragment, "FRAGMENT");
+
+        if(!checkCompileErrors(fragment, "FRAGMENT"))
+        {
+            glDeleteShader(vertex);
+            glDeleteShader(fragment);
+            return;
+        }
 
         m_ID = glCreateProgram();
         glAttachShader(m_ID, vertex);
         glAttachShader(m_ID, fragment);
         glLinkProgram(m_ID);
-        checkCompileErrors(m_ID, "PROGRAM");
+
+        if(!checkCompileErrors(m_ID, "PROGRAM"))
+        {
+            glDeleteProgram(m_ID);
+        }
 
         glDeleteShader(vertex);
         glDeleteShader(fragment);
@@ -72,17 +87,19 @@ namespace core
         glDeleteProgram(m_ID);
     }
 
-    void Shader::activate()
+    void Shader::SetActive(bool value) const
     {
-        glUseProgram(m_ID);
+        if (value)
+        {
+            glUseProgram(m_ID);
+        }
+        else
+        {
+            glUseProgram(0);
+        }
     }
 
-    void Shader::deActivate()
-    {
-        glUseProgram(0);
-    }
-
-    unsigned int Shader::getID()
+    GLuint Shader::getID() const
     {
         return m_ID;
     }
@@ -102,12 +119,12 @@ namespace core
         glUniform1f(glGetUniformLocation(m_ID, name.c_str()), value);
     }
 
-    void Shader::setFloat4(const std::string& name, float x, float y, float z, float w) const
+        void Shader::setFloat4(const std::string& name, float x, float y, float z, float w) const
     {
         glUniform4f(glGetUniformLocation(m_ID, name.c_str()), x, y, z, w);
     }
 
-    void Shader::checkCompileErrors(GLuint shader, std::string type)
+    bool Shader::checkCompileErrors(GLuint shader, std::string type)
     {
         GLint success;
         GLchar infoLog[1024];
@@ -118,6 +135,7 @@ namespace core
             {
                 glGetShaderInfoLog(shader, 1024, nullptr, infoLog);
                 std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+                return false;
             }
         }
         else
@@ -127,7 +145,10 @@ namespace core
             {
                 glGetProgramInfoLog(shader, 1024, nullptr, infoLog);
                 std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+                return false;
             }
         }
+
+        return true;
     }
 }
