@@ -24,7 +24,7 @@ project "Basic"
   staticruntime "on"
 
   targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+  objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
   files
   {
@@ -73,7 +73,7 @@ project "Test"
   staticruntime "on"
 
   targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+  objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
   files
   {
@@ -112,7 +112,7 @@ project "DrawArrays"
   staticruntime "on"
 
   targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+  objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
   files
   {
@@ -152,7 +152,7 @@ project "MultiDrawArrays"
   staticruntime "on"
 
   targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+  objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
   files
   {
@@ -192,7 +192,7 @@ project "DrawElements"
   staticruntime "on"
 
   targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+  objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
   files
   {
@@ -232,7 +232,7 @@ project "MultiDrawElements"
   staticruntime "on"
 
   targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+  objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
   files
   {
@@ -243,6 +243,46 @@ project "MultiDrawElements"
   includedirs
   {
     "MultiDrawElements/src",
+    "Basic/src",
+    "%{IncludeDir.GLFW}",    
+    "%{IncludeDir.Glad}"
+  }
+
+  links
+  {
+    "Basic"
+  }
+
+  filter "system:windows"
+        systemversion "latest"
+
+    filter "configurations:Debug"
+        runtime "Debug"
+        symbols "On"
+
+    filter "configurations:Release"
+        runtime "Release"
+        optimize "On"
+        
+project "DrawElementsBase"
+  location "DrawElementsBase"
+  kind "ConsoleApp"
+  language "C++"
+  cppdialect "C++17"
+  staticruntime "on"
+
+  targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+  objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+  files
+  {
+    "%{prj.name}/src/**.h",
+    "%{prj.name}/src/**.cpp",
+  }
+
+  includedirs
+  {
+    "DrawElementsBase/src",
     "Basic/src",
     "%{IncludeDir.GLFW}",    
     "%{IncludeDir.Glad}"
