@@ -269,3 +269,44 @@ project "DrawElementsBase"
     filter "configurations:Release"
         runtime "Release"
         optimize "On"
+        
+project "Uniforms"
+  location "Uniforms"
+  kind "ConsoleApp"
+  language "C++"
+  cppdialect "C++17"
+  staticruntime "on"
+
+  targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+  objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+  files
+  {
+    "%{prj.name}/src/**.h",
+    "%{prj.name}/src/**.cpp",
+  }
+
+  includedirs
+  {
+    "DrawElementsBase/src",
+    "Basic/src",
+    "%{IncludeDir.GLFW}",    
+    "%{IncludeDir.Glad}",    
+    "%{IncludeDir.glm}"
+  }
+
+  links
+  {
+    "Basic"
+  }
+
+  filter "system:windows"
+        systemversion "latest"
+
+    filter "configurations:Debug"
+        runtime "Debug"
+        symbols "On"
+
+    filter "configurations:Release"
+        runtime "Release"
+        optimize "On"        
