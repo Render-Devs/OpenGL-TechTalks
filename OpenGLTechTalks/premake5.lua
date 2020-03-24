@@ -250,7 +250,8 @@ project "DrawElementsBase"
     "DrawElementsBase/src",
     "Basic/src",
     "%{IncludeDir.GLFW}",    
-    "%{IncludeDir.Glad}"
+    "%{IncludeDir.Glad}",    
+    "%{IncludeDir.glm}"
   }
 
   links

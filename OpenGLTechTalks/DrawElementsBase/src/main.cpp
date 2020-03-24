@@ -1,4 +1,5 @@
 #include <glad/glad.h>
+#include <glm/glm.hpp>
 
 #include "Basic.h"
 #include "Shader.h"
@@ -9,7 +10,11 @@
 class DrawElementsBaseRenderer final : public IRenderer
 {
 private:
-    const std::vector<GLfloat> vertices =
+    const glm::vec4 COLOR_BLUE { 0.0f, 0.51f, 0.82f, 1.0f };
+    const glm::vec4 COLOR_YELLOW { 1.0f, 0.82f, 0.0f, 1.0f };
+    const char* SHADER_PROPERTY_COLOR = "color";
+
+    const std::vector<GLfloat> vertices
     {
         -0.63f,  0.00f, 0.0f,
         -0.63f,  0.50f, 0.0f,
@@ -22,7 +27,7 @@ private:
          0.63f, -0.50f, 0.0f
     };
 
-    const std::vector<GLuint> indices =
+    const std::vector<GLuint> indices
     {
         0, 1, 2,
         2, 3, 0
@@ -67,10 +72,10 @@ protected:
 
         program->SetActive(true);
 
-        program->setFloat4("color", 0.0f, 0.51f, 0.82f, 1.0f);
+        program->setVec4(SHADER_PROPERTY_COLOR, COLOR_BLUE);
         glDrawElementsBaseVertex(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, 0);
 
-        program->setFloat4("color", 1.0f, 0.82f, 0.0f, 1.0f);
+        program->setVec4(SHADER_PROPERTY_COLOR, COLOR_YELLOW);
         glDrawElementsBaseVertex(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, 4);
     }
 
