@@ -14,71 +14,42 @@ namespace core
     Shader::Shader(const char* vertexPath, const char* fragmentPath) : Shader()
     {
         // 1. retrieve the vertex/fragment source code from filePath
-        std::string vertexCode;
-        std::string fragmentCode;
-        std::ifstream vShaderFile;
-        std::ifstream fShaderFile;
-
-        vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-        fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-
-        try
-        {
-            vShaderFile.open(vertexPath);
-            fShaderFile.open(fragmentPath);
-            std::stringstream vShaderStream, fShaderStream;
-            vShaderStream << vShaderFile.rdbuf();
-            fShaderStream << fShaderFile.rdbuf();
-            vShaderFile.close();
-            fShaderFile.close();
-            vertexCode = vShaderStream.str();
-            fragmentCode = fShaderStream.str();
-        }
-        catch (const std::ifstream::failure&)
-        {
-            std::cout << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ::" << std::endl;
-        }
+        std::string vertexCode = readShader(vertexPath);
+        std::string fragmentCode = readShader(fragmentPath);
 
         // 2. compile shaders
-        const char* vShaderCode = vertexCode.c_str();
-        const char* fShaderCode = fragmentCode.c_str();
 
-        GLuint vertex, fragment;
+        GLuint vertex = compileShader(vertexCode.c_str(), GL_VERTEX_SHADER);
 
-        vertex = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vertex, 1, &vShaderCode, nullptr);
-        glCompileShader(vertex);
-
-        if(!checkCompileErrors(vertex, "VERTEX"))
+        if (!checkCompileErrors(vertex, "VERTEX"))
         {
             glDeleteShader(vertex);
             return;
         };
 
-        fragment = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(fragment, 1, &fShaderCode, nullptr);
-        glCompileShader(fragment);
+        GLuint fragment = compileShader(fragmentCode.c_str(), GL_FRAGMENT_SHADER);
 
-        if(!checkCompileErrors(fragment, "FRAGMENT"))
+        if (!checkCompileErrors(fragment, "FRAGMENT"))
         {
             glDeleteShader(vertex);
             glDeleteShader(fragment);
             return;
         }
 
-        m_ID = glCreateProgram();
-        glAttachShader(m_ID, vertex);
-        glAttachShader(m_ID, fragment);
-        glLinkProgram(m_ID);
+        GLuint programShaders[] = { vertex,fragment };
 
-        if(!checkCompileErrors(m_ID, "PROGRAM"))
-        {
-            glDeleteProgram(m_ID);
-        }
+        compileProgram(programShaders, sizeof(programShaders) / sizeof(programShaders[0]), false);
 
         glDeleteShader(vertex);
         glDeleteShader(fragment);
     }
+
+	Shader::Shader(const char* shaderPath, GLenum shaderType)
+	{
+        std::string shaderCode = readShader(shaderPath);
+        GLuint shaderPart = compileShader(shaderCode.c_str(), shaderType);
+        compileProgram(&shaderPart, 1, true);
+	}
 
     Shader::~Shader()
     {
@@ -145,5 +116,57 @@ namespace core
         }
 
         return true;
+    }
+
+    std::string Shader::readShader(const char* path) const
+    {
+        std::ifstream shaderFile;
+        std::string shaderCode;
+        shaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+        try
+        {
+            shaderFile.open(path);
+            std::stringstream shaderStream;
+            shaderStream << shaderFile.rdbuf();
+            shaderFile.close();
+            shaderCode = shaderStream.str();
+        }
+        catch(const std::ifstream::failure&)
+        {
+            std::cout << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ: " << path << std::endl;
+        }
+
+        return shaderCode.c_str();
+    }
+
+    GLuint Shader::compileShader(const char* shader, GLenum shaderType)
+    {
+        GLuint shaderObj = glCreateShader(shaderType);
+        glShaderSource(shaderObj, 1, &shader, nullptr);
+        glCompileShader(shaderObj);
+
+        return shaderObj;
+    }
+
+    void Shader::compileProgram(GLuint* shaders, size_t amount, bool separated)
+    {
+        m_ID = glCreateProgram();
+
+        for (size_t index = 0; index < amount; index++)
+        {
+            glAttachShader(m_ID, shaders[index]);
+        }
+
+        if (separated)
+        {
+            glProgramParameteri(m_ID, GL_PROGRAM_SEPARABLE, GL_TRUE);
+        }
+
+        glLinkProgram(m_ID);
+
+        if (!checkCompileErrors(m_ID, "PROGRAM"))
+        {
+            glDeleteProgram(m_ID);
+        }
     }
 }

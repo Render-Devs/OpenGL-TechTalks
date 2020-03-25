@@ -85,7 +85,8 @@ project "Test"
   {
     "Test/src",
     "Basic/src",
-    "%{IncludeDir.GLFW}"
+    "%{IncludeDir.GLFW}",
+    "%{IncludeDir.Glad}"
   }
 
   links
@@ -124,7 +125,7 @@ project "DrawArrays"
   {
     "DrawArrays/src",
     "Basic/src",
-    "%{IncludeDir.GLFW}",    
+    "%{IncludeDir.GLFW}",
     "%{IncludeDir.Glad}"
   }
 
@@ -164,7 +165,7 @@ project "MultiDrawArrays"
   {
     "MultiDrawArrays/src",
     "Basic/src",
-    "%{IncludeDir.GLFW}",    
+    "%{IncludeDir.GLFW}",
     "%{IncludeDir.Glad}"
   }
 
@@ -204,7 +205,7 @@ project "DrawElements"
   {
     "DrawElements/src",
     "Basic/src",
-    "%{IncludeDir.GLFW}",    
+    "%{IncludeDir.GLFW}",
     "%{IncludeDir.Glad}"
   }
 
@@ -244,7 +245,47 @@ project "MultiDrawElements"
   {
     "MultiDrawElements/src",
     "Basic/src",
-    "%{IncludeDir.GLFW}",    
+    "%{IncludeDir.GLFW}",
+    "%{IncludeDir.Glad}"
+  }
+
+  links
+  {
+    "Basic"
+  }
+
+  filter "system:windows"
+        systemversion "latest"
+
+    filter "configurations:Debug"
+        runtime "Debug"
+        symbols "On"
+
+    filter "configurations:Release"
+        runtime "Release"
+        optimize "On"
+
+project "SeparatePrograms"
+  location "SeparatePrograms"
+  kind "ConsoleApp"
+  language "C++"
+  cppdialect "C++17"
+  staticruntime "on"
+
+  targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+  files
+  {
+    "%{prj.name}/src/**.h",
+    "%{prj.name}/src/**.cpp",
+  }
+
+  includedirs
+  {
+    "SeparatePrograms/src",
+    "Basic/src",
+    "%{IncludeDir.GLFW}",
     "%{IncludeDir.Glad}"
   }
 

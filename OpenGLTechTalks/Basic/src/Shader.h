@@ -2,7 +2,6 @@
 #define SHADER
 
 #include <glad/glad.h>
-
 #include <string>
 
 namespace core
@@ -15,6 +14,8 @@ namespace core
         Shader();
 
         Shader(const char* vertexPath, const char* fragmentPath);
+
+        Shader(const char* shaderPartPath, GLenum shaderType);
 
         ~Shader();
 
@@ -30,6 +31,9 @@ namespace core
 
     private:
         static bool checkCompileErrors(GLuint shader, std::string type);
+        std::string readShader(const char* path) const;
+        GLuint compileShader(const char* shader, GLenum shaderType);
+        void compileProgram(GLuint* shaders, size_t amount, bool separated);
     };    
 }
 
