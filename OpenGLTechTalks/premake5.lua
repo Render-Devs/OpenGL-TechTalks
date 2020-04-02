@@ -12,6 +12,7 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDir = {}
 IncludeDir["GLFW"] = "ThirdParty/GLFW/include"
 IncludeDir["Glad"] = "ThirdParty/Glad/include"
+IncludeDir["glm"] = "ThirdParty/glm"
 
 include "ThirdParty/GLFW"
 include "ThirdParty/Glad"
@@ -29,7 +30,9 @@ project "Basic"
   files
   {
     "%{prj.name}/src/**.h",
-        "%{prj.name}/src/**.cpp"
+    "%{prj.name}/src/**.cpp",
+    "ThirdParty/glm/glm/**.hpp",
+    "ThirdParty/glm/glm/**.inl"
   }
 
   defines
@@ -40,7 +43,8 @@ project "Basic"
   includedirs
   {
     "%{IncludeDir.GLFW}",
-        "%{IncludeDir.Glad}"
+    "%{IncludeDir.Glad}",
+    "%{IncludeDir.glm}"
   }
 
   links
@@ -56,45 +60,6 @@ project "Basic"
     {
       "GLFW_INCLUDE_NONE"
     }
-
-    filter "configurations:Debug"
-        runtime "Debug"
-        symbols "On"
-
-    filter "configurations:Release"
-        runtime "Release"
-        optimize "On"
-
-project "Test"
-  location "Test"
-  kind "ConsoleApp"
-  language "C++"
-  cppdialect "C++17"
-  staticruntime "on"
-
-  targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-  objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
-
-  files
-  {
-    "%{prj.name}/src/**.h",
-    "%{prj.name}/src/**.cpp",
-  }
-
-  includedirs
-  {
-    "Test/src",
-    "Basic/src",
-    "%{IncludeDir.GLFW}"
-  }
-
-  links
-  {
-      "Basic"
-  }
-
-  filter "system:windows"
-        systemversion "latest"
 
     filter "configurations:Debug"
         runtime "Debug"
@@ -285,7 +250,8 @@ project "DrawElementsBase"
     "DrawElementsBase/src",
     "Basic/src",
     "%{IncludeDir.GLFW}",    
-    "%{IncludeDir.Glad}"
+    "%{IncludeDir.Glad}",    
+    "%{IncludeDir.glm}"
   }
 
   links
@@ -303,3 +269,44 @@ project "DrawElementsBase"
     filter "configurations:Release"
         runtime "Release"
         optimize "On"
+        
+project "Uniforms"
+  location "Uniforms"
+  kind "ConsoleApp"
+  language "C++"
+  cppdialect "C++17"
+  staticruntime "on"
+
+  targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+  objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+  files
+  {
+    "%{prj.name}/src/**.h",
+    "%{prj.name}/src/**.cpp",
+  }
+
+  includedirs
+  {
+    "DrawElementsBase/src",
+    "Basic/src",
+    "%{IncludeDir.GLFW}",    
+    "%{IncludeDir.Glad}",    
+    "%{IncludeDir.glm}"
+  }
+
+  links
+  {
+    "Basic"
+  }
+
+  filter "system:windows"
+        systemversion "latest"
+
+    filter "configurations:Debug"
+        runtime "Debug"
+        symbols "On"
+
+    filter "configurations:Release"
+        runtime "Release"
+        optimize "On"        

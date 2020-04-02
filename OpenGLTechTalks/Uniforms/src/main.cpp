@@ -10,21 +10,19 @@
 class DrawElementsBaseRenderer final : public IRenderer
 {
 private:
-    const glm::vec4 COLOR_BLUE { 0.0f, 0.51f, 0.82f, 1.0f };
-    const glm::vec4 COLOR_YELLOW { 1.0f, 0.82f, 0.0f, 1.0f };
     const char* SHADER_PROPERTY_COLOR = "color";
+    const char* SHADER_PROPERTY_X_OFFSET = "xOffset";
+    const char* SHADER_PROPERTY_Y_OFFSET = "yOffset";
+
+    const float X_BOUNDS = 0.75f;
+    const float Y_BOUNDS = 0.75f;
 
     const std::vector<GLfloat> vertices
     {
-        -0.63f,  0.00f, 0.0f,
-        -0.63f,  0.50f, 0.0f,
-         0.63f,  0.50f, 0.0f,
-         0.63f,  0.00f, 0.0f,
-
-        -0.63f, -0.50f, 0.0f,
-        -0.63f,  0.00f, 0.0f,
-         0.63f,  0.00f, 0.0f,
-         0.63f, -0.50f, 0.0f
+        -0.25f, -0.25f, 0.0f,
+        -0.25f,  0.25f, 0.0f,
+         0.25f,  0.25f, 0.0f,
+         0.25f, -0.25f, 0.0f
     };
 
     const std::vector<GLuint> indices
@@ -37,6 +35,10 @@ private:
     GLuint vbo{};
     GLuint ebo{};
     core::Shader* program{};
+
+    float xOffset{ 0.0f };
+    float yOffset{ 0.0f };
+    glm::vec4 color{};
 
 protected:
     void Init() override
@@ -63,7 +65,7 @@ protected:
         program = new core::Shader("vertex.vert", "fragment.frag");
     }
 
-    void Update(float) override
+    void Update(float deltaTime) override
     {
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -72,11 +74,17 @@ protected:
 
         program->SetActive(true);
 
-        program->setVec4(SHADER_PROPERTY_COLOR, COLOR_BLUE);
-        glDrawElementsBaseVertex(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, 0);
+        xOffset = float(sin(glfwGetTime()) * X_BOUNDS);
+        yOffset = float(cos(glfwGetTime()) * Y_BOUNDS);
+        color.x = (float(sin(glfwGetTime())) + 1) / 2;
+        color.y = (float(cos(glfwGetTime())) + 1) / 2;
+        color.z = color.x + color.y;
+        
+        program->setFloat(SHADER_PROPERTY_X_OFFSET, xOffset);
+        program->setFloat(SHADER_PROPERTY_Y_OFFSET, yOffset);
+        program->setVec4(SHADER_PROPERTY_COLOR, color);
 
-        program->setVec4(SHADER_PROPERTY_COLOR, COLOR_YELLOW);
-        glDrawElementsBaseVertex(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0, 4);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     }
 
     void PostUpdate(float) override
@@ -107,5 +115,5 @@ public:
 
 Application* CreateApplication()
 {
-    return new App(new DrawElementsBaseRenderer(), WindowData("glDrawElementsBaseVertex", 800, 600));
+    return new App(new DrawElementsBaseRenderer(), WindowData("Uniforms", 800, 600));
 }
