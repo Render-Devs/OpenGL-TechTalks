@@ -119,6 +119,11 @@ namespace core
         glUniform1f(glGetUniformLocation(m_ID, name.c_str()), value);
     }
 
+        void Shader::setFloat4(const std::string& name, float x, float y, float z, float w) const
+    {
+        glUniform4f(glGetUniformLocation(m_ID, name.c_str()), x, y, z, w);
+    }
+
     bool Shader::checkCompileErrors(GLuint shader, std::string type)
     {
         GLint success;
