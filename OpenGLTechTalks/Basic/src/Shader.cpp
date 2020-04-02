@@ -44,11 +44,21 @@ namespace core
         glDeleteShader(fragment);
     }
 
-	Shader::Shader(const char* shaderPath, GLenum shaderType)
+	Shader::Shader(const char* shaderPath, GLenum shaderType, bool explicitGeneration = true)
 	{
-        std::string shaderCode = readShader(shaderPath);
-        GLuint shaderPart = compileShader(shaderCode.c_str(), shaderType);
-        compileProgram(&shaderPart, 1, true);
+        if (explicitGeneration)
+        {
+            std::string shaderCode = readShader(shaderPath);
+            GLuint shaderPart = compileShader(shaderCode.c_str(), shaderType);
+            compileProgram(&shaderPart, 1, true);
+        }
+        else
+        {
+            std::string shaderCode = readShader(shaderPath);
+            const GLchar* source = shaderCode.c_str();
+            m_ID = glCreateShaderProgramv(shaderType, 1, &source);
+        }
+
 	}
 
     Shader::~Shader()

@@ -1,4 +1,5 @@
 #include "Basic.h"
+#include <iostream>
 
 static bool counter;
 static float CalculatedTime;
@@ -17,9 +18,29 @@ class Renderer : public IRenderer
 public:
 	virtual void Init() override
 	{
-		sepVertex = new core::Shader("vertexOnly.vert", GL_VERTEX_SHADER);
-		sepFrag1 = new core::Shader("fragOnlyVarOne.frag", GL_FRAGMENT_SHADER);
-		sepFrag2 = new core::Shader("fragOnlyVarTwo.frag", GL_FRAGMENT_SHADER);
+		std::cout << "Shoose type of separate program generation: \n 1. Explicit\n 2.Implicit\n" << std::endl;
+		std::cout << "Your choice: ";
+		int choice = 0;
+		while (choice == 0)
+		{
+			std::cin >> choice;
+			if (std::cin.fail())
+			{
+				std::cin.clear();
+				std::cout << "Invalid Input. Try again: ";
+				continue;
+			}
+			if (choice != 1 && choice != 2)
+			{
+				std::cin.clear();
+				std::cout << "Invalid Input. Try again: ";
+				choice = 0;
+			}
+		}
+		sepVertex = new core::Shader("vertexOnly.vert", GL_VERTEX_SHADER, choice == 1);
+		sepFrag1 = new core::Shader("fragOnlyVarOne.frag", GL_FRAGMENT_SHADER, choice == 1);
+		sepFrag2 = new core::Shader("fragOnlyVarTwo.frag", GL_FRAGMENT_SHADER, choice == 1);
+		
 	
 		float vertices[] =
 		{
@@ -57,7 +78,6 @@ public:
 		UpdateCounter(deltaTime);
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glUseProgram(0);
 
 		glBindProgramPipeline(counter ? programPipes[0] : programPipes[1]);
 

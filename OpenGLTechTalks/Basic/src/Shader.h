@@ -15,7 +15,7 @@ namespace core
 
         Shader(const char* vertexPath, const char* fragmentPath);
 
-        Shader(const char* shaderPartPath, GLenum shaderType);
+        Shader(const char* shaderPartPath, GLenum shaderType, bool explicitGeneration);
 
         ~Shader();
 
