@@ -2,3 +2,4 @@
 #include "EntryPoint.h"
 #include "IRenderer.h"
 #include "Application.h"
+#include "Shader.h"
