@@ -2,6 +2,8 @@
 #include "Basic.h"
 #include <cmath>
 
+#define USE_FIXED_INDEX 0
+
 class RestartPrimitivesRenderer final : public IRenderer
 {
 
@@ -42,9 +44,9 @@ protected:
 
 		static const GLushort cube_indices[] =
 		{
-			0, 2, 1, 0xFF, 1, 4, 3, 0,
-			0xFF,
-			6, 7, 5, 0xFF, 5, 4, 7, 0xFF
+			0, 2, 1, 0xFFFF, 1, 4, 3, 0,
+			0xFFFF,
+			6, 7, 5, 0xFFFF, 5, 4, 7, 0xFFFF
 		};
 
 		indiciesAmount = sizeof(cube_indices) / sizeof(cube_indices[0]);
@@ -79,11 +81,17 @@ protected:
 
 		glBindVertexArray(vertexArray);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBuffer);
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		glEnable(GL_PRIMITIVE_RESTART);
-		glPrimitiveRestartIndex(0xFF);
+
+#if USE_FIXED_INDEX
+		glEnable(GL_PRIMITIVE_RESTART_FIXED_INDEX);
 		glDrawElements(GL_TRIANGLE_STRIP, indiciesAmount, GL_UNSIGNED_SHORT, NULL);
-		glDisable(GL_PRIMITIVE_RESTART);
+		glDisable(GL_PRIMITIVE_RESTART_FIXED_INDEX);
+#else
+		glEnable(GL_PRIMITIVE_RESTART_INDEX);
+		glPrimitiveRestartIndex(0xFFFF);
+		glDrawElements(GL_TRIANGLE_STRIP, indiciesAmount, GL_UNSIGNED_SHORT, NULL);
+		glDisable(GL_PRIMITIVE_RESTART_INDEX);
+#endif
 	}
 
 	void PostUpdate(float) override
