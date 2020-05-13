@@ -1,64 +1,61 @@
 #include <glad/glad.h>
+#include <glm/glm.hpp>
 
 #include "Basic.h"
+#include "Shader.h"
 
 #include <iostream>
 #include <vector>
 
-class MultiDrawArraysRenderer final : public IRenderer
+class DrawElementsBaseRenderer final : public IRenderer
 {
 private:
+    const char* SHADER_PROPERTY_COLOR = "color";
+
+    const float Z_FIRST = 0.0f;
+    const float Z_SECOND = 0.1f;
+
+    const glm::vec4 COLOR_YELLOW = glm::vec4(1, 1, 0, 1);
+    const glm::vec4 COLOR_BLUE = glm::vec4(0, 0, 1, 1);
+    const glm::vec4 COLOR_RED = glm::vec4(1, 0, 0, 1);
+
     const std::vector<GLfloat> vertices
     {
-        -1.00f, 1.00f, 0.00f,
-         0.00f, 1.00f, 0.00f,
-        -1.00f, 0.00f, 0.00f,
+        -0.5f, -0.5f, Z_FIRST,
+         0.0f,  0.5f, Z_FIRST,
+         0.5f, -0.5f, Z_FIRST,
 
-         1.00f, -1.00f, 0.00f,
-         0.00f, -1.00f, 0.00f,
-         1.00f,  0.00f, 0.00f,
-
-        -1.00f, -1.00f, 0.00f,
-        -1.00f, -0.50f, 0.00f,
-        -0.50f, -1.00f, 0.00f,
-
-         1.00f,  1.00f, 0.00f,
-         1.00f,  0.50f, 0.00f,
-         0.50f,  1.00f, 0.00f
+        -0.5f,  0.5f, Z_SECOND,
+         0.5f,  0.5f, Z_SECOND,
+         0.0f, -0.5f, Z_SECOND,
     };
 
-    GLint     first[4]{ 0, 3, 6, 9 };
-    GLint     count[4]{ 3, 3, 3, 3 };
-    GLuint    numObjects{ 4 };
-    GLuint    vao{};
-    GLuint    vbo{};
-    GLuint    shaderProgram{};
+    GLuint vao{};
+    GLuint vbo{};
+    core::Shader* program{};
 
 protected:
     void Init() override
     {
-        glGenVertexArrays(1, &vao);
-        glGenBuffers(1, &vbo);
+        InitBuffers();
 
-        glBindVertexArray(vao);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
-        glEnableVertexAttribArray(0);
-
-        shaderProgram = CreateShaderProgram();
+        program = new core::Shader("vertex.vert", "fragment.frag");
     }
 
-    void Update(float) override
+    void Update(float deltaTime) override
     {
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        glClearColor(COLOR_YELLOW.x, COLOR_YELLOW.y, COLOR_YELLOW.z, COLOR_YELLOW.w);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glUseProgram(shaderProgram);
-
         glBindVertexArray(vao);
-        glMultiDrawArrays(GL_TRIANGLES, first, count, numObjects);
+
+        program->SetActive(true);
+
+        program->setVec4(SHADER_PROPERTY_COLOR, COLOR_BLUE);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+
+        program->setVec4(SHADER_PROPERTY_COLOR, COLOR_RED);
+        glDrawArrays(GL_TRIANGLES, 3, 6);
     }
 
     void PostUpdate(float) override
@@ -69,57 +66,31 @@ protected:
     {
         glDeleteVertexArrays(1, &vao);
         glDeleteBuffers(1, &vbo);
-        glDeleteProgram(shaderProgram);
+        delete program;
     }
 
     void SetViewport(uint32_t width, uint32_t height) override
     {
+        glViewport(0, 0, width, height);
     }
 
 private:
-    static GLuint CreateShaderProgram()
+    void InitBuffers()
     {
-        static const char* vs_source[] =
-        {
-            "#version 330 core                                                 \n"
-            "layout (location = 0) in vec3 aPos;                               \n"
-            "                                                                  \n"
-            "void main(void)                                                   \n"
-            "{                                                                 \n"
-            "    gl_Position = vec4(aPos, 1.0);                                \n"
-            "}                                                                 \n"
-        };
+        glGenVertexArrays(1, &vao);
+        glGenBuffers(1, &vbo);
 
-        static const char* fs_source[] =
-        {
-            "#version 330 core                                                 \n"
-            "out vec4 color;                                                   \n"
-            "                                                                  \n"
-            "void main(void)                                                   \n"
-            "{                                                                 \n"
-            "    color = vec4(0.95, 0.55, 0.0, 1.0);                           \n"
-            "}                                                                 \n"
-        };
+        glBindVertexArray(vao);
 
-        GLuint vertex, fragment, program;
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), vertices.data(), GL_STATIC_DRAW);
 
-        vertex = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vertex, 1, vs_source, nullptr);
-        glCompileShader(vertex);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
+        glEnableVertexAttribArray(0);
 
-        fragment = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(fragment, 1, fs_source, nullptr);
-        glCompileShader(fragment);
-
-        program = glCreateProgram();
-        glAttachShader(program, vertex);
-        glAttachShader(program, fragment);
-        glLinkProgram(program);
-
-        glDeleteShader(vertex);
-        glDeleteShader(fragment);
-
-        return program;
+        glBindVertexArray(0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 };
 
@@ -134,5 +105,5 @@ public:
 
 Application* CreateApplication()
 {
-    return new App(new MultiDrawArraysRenderer(), WindowData("glMultiDrawArrays", 800, 600));
+    return new App(new DrawElementsBaseRenderer(), WindowData("Uniforms", 800, 600));
 }
