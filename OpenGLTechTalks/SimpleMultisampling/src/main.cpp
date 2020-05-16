@@ -30,16 +30,7 @@ private:
          0.0f, -0.5f, Z_SECOND,
     };
 
-    const std::vector<GLfloat> quadVertices
-    {    
-        -1.0f,  1.0f,  0.0f, 1.0f,
-        -1.0f, -1.0f,  0.0f, 0.0f,
-        1.0f, -1.0f,  1.0f, 0.0f,
-
-        -1.0f,  1.0f,  0.0f, 1.0f,
-        1.0f, -1.0f,  1.0f, 0.0f,
-        1.0f,  1.0f,  1.0f, 1.0f
-    };
+    const GLuint SAMPLES{ 8 };
 
     uint32_t width{ 800 };
     uint32_t height{ 600 };
@@ -47,10 +38,6 @@ private:
     GLuint vao{};
     GLuint vbo{};
     core::Shader* program{};
-
-    GLuint quadVao{};
-    GLuint quadVbo{};
-    core::Shader* screenProgram{};
 
     GLuint fbo{};
     GLuint texColorBuffer{};
@@ -63,9 +50,6 @@ protected:
         InitBuffers();
 
         program = new core::Shader("vertex.vert", "fragment.frag");
-        screenProgram = new core::Shader("quad.vert", "quad.frag");
-        screenProgram->SetActive(true);
-        screenProgram->setInt("screenTexture", 0);
     }
 
     void Update(float deltaTime) override
@@ -85,16 +69,15 @@ protected:
         program->setVec4(SHADER_PROPERTY_COLOR, COLOR_RED);
         glDrawArrays(GL_TRIANGLES, 3, 3);
 
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+
         glDisable(GL_DEPTH_TEST);
 
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        screenProgram->SetActive(true);
-        glBindVertexArray(quadVao);
-        glBindTexture(GL_TEXTURE_2D, texColorBuffer);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
     }
 
     void PostUpdate(float) override
@@ -102,13 +85,13 @@ protected:
     }
 
     void Dispose() override
-    {        
+    {
         glDeleteBuffers(1, &vbo);
         glDeleteVertexArrays(1, &vao);
         glDeleteRenderbuffers(1, &rbo);
+        glDeleteTextures(1, &texColorBuffer);
         glDeleteFramebuffers(1, &fbo);
 
-        delete screenProgram;
         delete program;
     }
 
@@ -117,6 +100,12 @@ protected:
         this->width = width;
         this->height = height;
         glViewport(0, 0, width, height);
+
+        glDeleteRenderbuffers(1, &rbo);
+        glDeleteTextures(1, &texColorBuffer);
+        glDeleteFramebuffers(1, &fbo);
+
+        InitFramebuffer();
     }
 
 private:
@@ -135,24 +124,6 @@ private:
 
         glBindVertexArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-
-        glGenVertexArrays(1, &quadVao);
-        glGenBuffers(1, &quadVbo);
-
-        glBindVertexArray(quadVao);
-
-        glBindBuffer(GL_ARRAY_BUFFER, quadVbo);
-        glBufferData(GL_ARRAY_BUFFER, quadVertices.size() * sizeof(GLfloat), quadVertices.data(), GL_STATIC_DRAW);
-
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*)0);
-
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat)));
-
-        glBindVertexArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
     void InitFramebuffer()
@@ -161,20 +132,17 @@ private:
         glBindFramebuffer(GL_FRAMEBUFFER, fbo);
         
         glGenTextures(1, &texColorBuffer);
-        glBindTexture(GL_TEXTURE_2D, texColorBuffer);
+        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, texColorBuffer);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+        glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, SAMPLES, GL_RGB, width, height, GL_TRUE);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texColorBuffer, 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, texColorBuffer, 0);
 
 
         glGenRenderbuffers(1, &rbo);
         glBindRenderbuffer(GL_RENDERBUFFER, rbo);
 
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+        glRenderbufferStorageMultisample(GL_RENDERBUFFER, SAMPLES, GL_DEPTH24_STENCIL8, width, height);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
