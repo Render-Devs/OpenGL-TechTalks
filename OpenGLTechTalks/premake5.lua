@@ -69,6 +69,52 @@ project "Basic"
         runtime "Release"
         optimize "On"
 
+-- Demos
+
+project "FirstDemo"
+  location "Demos/FirstDemo"
+  kind "ConsoleApp"
+  language "C++"
+  cppdialect "C++17"
+  staticruntime "on"
+
+  targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+  objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+  files
+  {
+    "%{prj.name}/src/**.h",
+    "%{prj.name}/src/**.cpp",
+  }
+
+  includedirs
+  {
+    "Basic/src",
+    "%{IncludeDir.GLFW}",
+    "%{IncludeDir.Glad}",
+    "%{IncludeDir.glm}"
+  }
+
+  links
+  {
+    "Basic"
+  }
+
+  filter "system:windows"
+        systemversion "latest"
+
+    filter "configurations:Debug"
+        runtime "Debug"
+        symbols "On"
+
+    filter "configurations:Release"
+        runtime "Release"
+        optimize "On"
+
+--End Demos
+
+-- Separate projects
+
 project "DrawArrays"
   location "DrawArrays"
   kind "ConsoleApp"
@@ -89,7 +135,7 @@ project "DrawArrays"
   {
     "DrawArrays/src",
     "Basic/src",
-    "%{IncludeDir.GLFW}",    
+    "%{IncludeDir.GLFW}",
     "%{IncludeDir.Glad}"
   }
 
@@ -129,7 +175,7 @@ project "MultiDrawArrays"
   {
     "MultiDrawArrays/src",
     "Basic/src",
-    "%{IncludeDir.GLFW}",    
+    "%{IncludeDir.GLFW}",
     "%{IncludeDir.Glad}"
   }
 
@@ -169,7 +215,7 @@ project "DrawElements"
   {
     "DrawElements/src",
     "Basic/src",
-    "%{IncludeDir.GLFW}",    
+    "%{IncludeDir.GLFW}",
     "%{IncludeDir.Glad}"
   }
 
@@ -209,7 +255,7 @@ project "MultiDrawElements"
   {
     "MultiDrawElements/src",
     "Basic/src",
-    "%{IncludeDir.GLFW}",    
+    "%{IncludeDir.GLFW}",
     "%{IncludeDir.Glad}"
   }
 
@@ -228,7 +274,7 @@ project "MultiDrawElements"
     filter "configurations:Release"
         runtime "Release"
         optimize "On"
-        
+
 project "DrawElementsBase"
   location "DrawElementsBase"
   kind "ConsoleApp"
@@ -249,8 +295,8 @@ project "DrawElementsBase"
   {
     "DrawElementsBase/src",
     "Basic/src",
-    "%{IncludeDir.GLFW}",    
-    "%{IncludeDir.Glad}",    
+    "%{IncludeDir.GLFW}",
+    "%{IncludeDir.Glad}",
     "%{IncludeDir.glm}"
   }
 
@@ -269,7 +315,7 @@ project "DrawElementsBase"
     filter "configurations:Release"
         runtime "Release"
         optimize "On"
-        
+
 project "Uniforms"
   location "Uniforms"
   kind "ConsoleApp"
@@ -290,8 +336,8 @@ project "Uniforms"
   {
     "DrawElementsBase/src",
     "Basic/src",
-    "%{IncludeDir.GLFW}",    
-    "%{IncludeDir.Glad}",    
+    "%{IncludeDir.GLFW}",
+    "%{IncludeDir.Glad}",
     "%{IncludeDir.glm}"
   }
 
@@ -309,4 +355,45 @@ project "Uniforms"
 
     filter "configurations:Release"
         runtime "Release"
-        optimize "On"        
+        optimize "On"
+
+project "InstanceRendering"
+    location "InstanceRendering"
+    kind "ConsoleApp"
+    language "C++"
+    cppdialect "C++17"
+    staticruntime "on"
+
+    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+
+    files
+    {
+      "%{prj.name}/src/**.h",
+      "%{prj.name}/src/**.cpp",
+    }
+
+    includedirs
+    {
+      "InstanceRendering/src",
+      "Basic/src",
+      "%{IncludeDir.GLFW}",
+      "%{IncludeDir.Glad}",
+      "%{IncludeDir.glm}"
+    }
+
+    links
+    {
+      "Basic"
+    }
+
+    filter "system:windows"
+          systemversion "latest"
+
+      filter "configurations:Debug"
+          runtime "Debug"
+          symbols "On"
+
+      filter "configurations:Release"
+          runtime "Release"
+          optimize "On"
